@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <form action="/sell" method="post">
+      <div class="form-group">
+          
+            <select name='symbol' class="form-control">
+                  <option disabled selected value="" >Symbol</option>
+                  
+                  {% for item in symbols_unigue %}
+                  <option value="{{ item }}" {% if item == symbol  %} selected="selected"{% endif %}>{{ item }}</option>
+                  {% endfor %}
+            </select>       
+      </div>
+
+      <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="shares_quantity" placeholder="Shares" type="number" min="1" >
+      </div>
+        
+        <button class="btn btn-primary" type="submit">Sell</button>
+    </form>
+{% endblock %}

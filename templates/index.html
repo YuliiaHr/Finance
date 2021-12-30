@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>TOTAL</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for portfolio_item in portfolio %}
+                <tr>
+                    <td>{{portfolio_item["symbol"] }}</td>
+                    <td>{{portfolio_item["name"] }}</td>
+                    <td>{{portfolio_item["quantity"] }}</td>
+                    <td>${{portfolio_item["price"]}}</td>
+                    <td>{{portfolio_item["total"]}}</td>
+                    <td><a class="btn btn-primary" href="/buy?symbol={{portfolio_item['symbol']}}">Buy</a></td>
+                    <td><a class="btn btn-primary" href="/sell?symbol={{portfolio_item['symbol']}}">Sell</a></td>
+                </tr>
+            {% endfor %} 
+            <tr>
+                <td>CASH</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{balance}}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>${{cash}}</b></td>
+            </tr>
+        </tbody>
+    </table>
+    <a class="btn btn-primary" href="/add_cash">Add cash</a>
+{% endblock %}
