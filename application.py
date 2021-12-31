@@ -1,19 +1,12 @@
 import os
 import re
-import requests
-import json
-import re
-import alert
-   
-from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
-from sqlalchemy.engine.base import Transaction
 from flask_session import Session
+from cs50 import SQL
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 import time
-
 from helpers import apology, login_required, lookup, usd
 
 # Configure application
@@ -51,22 +44,16 @@ if not os.environ.get("API_KEY"):
 def index():
     user_id=session['user_id']
     transactions = db.execute("SELECT * FROM purchases WHERE buyer_id=:id", id=user_id)
-    
     result = db.execute("SELECT cash FROM users WHERE id=:id", id=user_id)
-   
     balance = round(result[0]['cash'], 2)
-    
     grand_total=0 
     cash=0
 
     for transaction in transactions:
         price=transaction['price']
         quantity=transaction["quantity"]
-               
         expense = quantity*price
-
         grand_total += expense
-    
         cash=round((balance+grand_total), 2)
         
     shares_quantity_bought={}
@@ -177,17 +164,24 @@ def login():
         elif not request.form.get("password"):
             return apology("must provide password", 403)
         
+        if not len(username) >= 3 or not len(username) <= 12:
+            flash("Username must be 3-8 characters")    
+            return render_template("login.html")
+
+        if not len(password) >= 6 or not len(password) <= 12:
+            flash("Password length must be 6-12 characters")
+            return render_template("login.html")
+        
         regex = r'^\w*$'    
-        if not re.match(regex,username): 
-           flash("Username must contain letters and numbers")
+               
+        if re.match(regex,username) == False: 
+            flash("Username must contain letters and numbers")
+            return render_template("login.html")
 
-        if not len(username) >= 3 or len(username) <= 8:
-            flash("Password length must be at least 6 characters")    
+        if not re.match(regex,password): 
+           flash("Password must contain letters and numbers")
+           return render_template("login.html")
 
-        if not len(password) >= 6:
-          flash("Password length must be at least 6 characters")
-        
-        
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
  
         # Ensure username exists and password is correct
@@ -222,7 +216,16 @@ def password_reset():
             return apology("must provide password", 403)
         elif password_reset != password_again:   
             return apology("Your password and confirmation password do not match", 403)
-        
+
+        regex = r'^\w*$'    
+               
+        if re.match(regex,username) == False: 
+            flash("Username must contain letters and numbers")
+            return render_template("login.html")
+
+        if not re.match(regex,password_reset): 
+           flash("Password must contain letters and numbers")
+           return render_template("login.html")
         result=db.execute("SELECT id FROM users WHERE username=?", username)
         user_id=result[0]['id']
        
@@ -268,11 +271,7 @@ def add_cash():
 @login_required
 def quote():
     if request.method == "POST":
-        # query = {"token": "pk_82d3992535964b8b9e7d370b21b8242a"}
         symbol = request.form.get("symbol")
-        # response = requests.get("https://cloud.iexapis.com/stable/stock/"+symbol+"/quote", params= query)
-        # response_json = response.json()
-        # price = response_json['iexClose']
         data = lookup(symbol)
         print('data', data)
 
@@ -301,6 +300,16 @@ def register():
             return apology("must provide password", 403)
         elif password != password_again:   
             return apology("Your password and confirmation password do not match", 403)
+        
+        regex = r'^\w*$'    
+               
+        if re.match(regex,username) == False: 
+            flash("Username must contain letters and numbers")
+            return render_template("login.html")
+
+        if not re.match(regex,password): 
+           flash("Password must contain letters and numbers")
+           return render_template("login.html")
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))

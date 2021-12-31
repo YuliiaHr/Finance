@@ -7,10 +7,10 @@
 {% block main %}
     <form action="/register" method="post">
         <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text" required pattern="([a-z]|[A-Z]|[0-9])*" title="Username must be letters and numbers, 4-8 characters in length.">
+            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text" required pattern="[A-Za-z0-9_]{3,8}" title="Username must be letters and numbers, 3-12 characters in length.">
         </div>
         <div class="form-group">
-            <input class="form-control" name="password" placeholder="Password" type="password" required pattern="([a-z]|[A-Z]|[0-9])*" title="Password must be letters and numbers and 4-8 characters in length.">
+            <input class="form-control" name="password" placeholder="Password" type="password" required pattern="[A-Za-z0-9_]{3,8}" title="Password must be letters and numbers, 3-12 characters in length.">
         </div>
          <div class="form-group">
             <input class="form-control" name="password_again" placeholder="Password (again)" type="password">
